@@ -1,0 +1,122 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net">
+  <diagram name="BobbyHost UseCase">
+    <mxGraphModel dx="1188" dy="752" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- System boundary -->
+        <mxCell id="sys" value="BobbyHost Generator System" style="rounded=1;whiteSpace=wrap;html=1;strokeColor=#2B79B8;strokeWidth=1.5;fillColor=#f8fbff;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="200" y="60" width="700" height="520" as="geometry"/>
+        </mxCell>
+
+        <!-- Actors (left) -->
+        <mxCell id="actorVisitor" value="Посетитель&#10;(Гость)" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="30" y="120" width="60" height="80" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="actorUser" value="Пользователь&#10;(Владелец сайта)" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="30" y="260" width="60" height="80" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="actorAdmin" value="Администратор" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="30" y="400" width="60" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- Actor right -->
+        <mxCell id="actorClient" value="Зритель&#10;(Клиент)" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="930" y="260" width="60" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- Use cases inside system -->
+        <mxCell id="uc1" value="Регистрация" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fontSize=12;strokeColor=#333;fillColor=#ffffff;" vertex="1" parent="sys">
+          <mxGeometry x="80" y="30" width="160" height="48" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="uc2" value="Авторизация" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;fontSize=12;strokeColor=#333;fillColor=#ffffff;" vertex="1" parent="sys">
+          <mxGeometry x="300" y="30" width="160" height="48" as="geometry"/>
+        </mxCell>
+         <mxCell id="uc3" value="Заполнение данных визитки" style="ellipse;whiteSpace=wrap;html=1;fontSize=12;strokeColor=#333;fillColor=#ffffff;" vertex="1" parent="sys">
+          <mxGeometry x="200" y="130" width="260" height="56" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="uc4" value="Выбор поддомена" style="ellipse;whiteSpace=wrap;html=1;fontSize=12;strokeColor=#333;fillColor=#ffffff;" vertex="1" parent="sys">
+          <mxGeometry x="200" y="220" width="220" height="48" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="uc5" value="Публикация&#10;(запись в БД)" style="ellipse;whiteSpace=wrap;html=1;fontSize=12;strokeColor=#333;fillColor=#ffffff;" vertex="1" parent="sys">
+          <mxGeometry x="200" y="320" width="260" height="56" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="uc7" value="Просмотр готового сайта" style="ellipse;whiteSpace=wrap;html=1;fontSize=12;strokeColor=#333;fillColor=#ffffff;" vertex="1" parent="sys">
+          <mxGeometry x="520" y="320" width="260" height="56" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="uc6" value="Управление ресурсами" style="ellipse;whiteSpace=wrap;html=1;fontSize=12;strokeColor=#333;fillColor=#ffffff;" vertex="1" parent="sys">
+          <mxGeometry x="520" y="190" width="220" height="48" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="uc8" value="Ошибка валидации" style="ellipse;whiteSpace=wrap;html=1;fontSize=11;strokeColor=#c0392b;fillColor=#fff2f2;" vertex="1" parent="sys">
+          <mxGeometry x="440" y="220" width="160" height="40" as="geometry"/>
+        </mxCell>
+
+        <!-- Associations (plain lines) -->
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;exitX=0.25;exitY=0.5;exitPerimeter=1;entryX=0.2;entryY=0.6;entryPerimeter=1;strokeColor=#333;" edge="1" source="actorVisitor" target="uc1" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;exitX=0.25;exitY=0.6;exitPerimeter=1;entryX=0.37;entryY=0.1;entryPerimeter=1;strokeColor=#333;" edge="1" source="actorVisitor" target="uc2" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;exitX=0.25;exitY=0.6;exitPerimeter=1;entryX=0.45;entryY=0.08;entryPerimeter=1;strokeColor=#333;" edge="1" source="actorUser" target="uc2" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#333;" edge="1" source="actorUser" target="uc3" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#333;" edge="1" source="actorUser" target="uc4" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#333;" edge="1" source="actorUser" target="uc5" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#333;" edge="1" source="actorUser" target="uc7" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#333;" edge="1" source="actorAdmin" target="uc6" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#333;" edge="1" source="actorAdmin" target="uc2" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;strokeColor=#333;" edge="1" source="actorClient" target="uc7" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Include relationships (dashed + label) -->
+        <mxCell id="inc1" value="&lt;&lt;include&gt;&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;dashed=1;dashedPattern=4 4;fontSize=11;strokeColor=#2B79B8;endArrow=block;html=1;" edge="1" source="uc5" target="uc3" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="inc2" value="&lt;&lt;include&gt;&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;dashed=1;dashedPattern=4 4;fontSize=11;strokeColor=#2B79B8;endArrow=block;html=1;" edge="1" source="uc5" target="uc4" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Extend relationship (dashed, labeled) -->
+        <mxCell id="ext1" value="&lt;&lt;extend&gt;&gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;dashed=1;dashedPattern=2 3;fontSize=11;strokeColor=#c0392b;endArrow=block;html=1;" edge="1" source="uc4" target="uc8" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
