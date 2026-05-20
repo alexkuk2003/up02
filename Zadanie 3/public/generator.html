@@ -1,0 +1,623 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Конструктор визитки | BobbyHost</title>
+  <style>
+    body { font-family: Arial, Helvetica, sans-serif; background:#f4f7f6; margin:0; padding-top:80px; }
+    .top-nav { background:#2c3e50; color:#fff; position:fixed; top:0; left:0; right:0; height:60px; display:flex; align-items:center; justify-content:space-between; padding:0 20px; box-shadow:0 2px 8px rgba(0,0,0,0.15); z-index:1000; }
+    .top-nav a { color:#fff; text-decoration:none; margin-left:16px; }
+    .container { max-width:980px; margin:24px auto; background:#fff; padding:20px 24px; border-radius:8px; box-shadow:0 6px 30px rgba(0,0,0,0.06); }
+    label { display:block; margin-top:12px; font-weight:600; color:#333; }
+    input[type="text"], textarea, select { width:100%; padding:10px; margin-top:6px; box-sizing:border-box; border:1px solid #ddd; border-radius:6px; }
+    textarea { min-height:80px; resize:vertical; }
+    .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .actions { margin-top:18px; display:flex; gap:10px; }
+    button.btn { background:#2ecc71; color:#fff; border:none; padding:12px 14px; border-radius:8px; cursor:pointer; font-weight:700; }
+    button.btn.alt { background:#0b74ff; }
+    .download-section { display:none; margin-top:16px; padding:14px; background:#e9f6ef; border:1px dashed #27ae60; border-radius:8px; text-align:center; }
+    a.dl-server { display:inline-block; margin-top:8px; color:#1273d1; font-weight:700; text-decoration:none; }
+    pre#log { background:#111; color:#0f0; padding:12px; border-radius:6px; max-height:160px; overflow:auto; margin-top:12px; white-space:pre-wrap; }
+    .pages { margin-top:12px; }
+    .page { border:1px solid #eee; padding:10px; border-radius:6px; background:#fafafa; margin-bottom:8px; }
+    .page .del { background:#ff6b6b; color:#fff; border:none; padding:6px 8px; border-radius:4px; cursor:pointer; float:right; }
+    .small { font-size:13px; color:#666; margin-top:6px; }
+  </style>
+</head>
+<body>
+  <nav class="top-nav">
+    <div><strong style="color:#2ecc71">BobbyHost</strong> Generator</div>
+    <div>
+      <a href="dashboard.html">📂 Мои сайты</a>
+      <a href="#" onclick="logout()" style="color:#ff6b6b">🚪 Выход</a>
+    </div>
+  </nav>
+
+  <main class="container">
+    <h2>🛠 Конструктор визитки / лендинга</h2>
+
+    <form id="siteForm">
+<label>Домен (короткое имя, используется для имени архива):</label>
+      <input type="text" id="domain" placeholder="my-site">
+
+      <label>Заголовок сайта (site_name):</label>
+      <input type="text" id="site_name" placeholder="Название компании">
+
+      <section style="margin-top:14px">
+        <h3>⚙️ Названия разделов меню</h3>
+        <div class="grid2">
+          <label>Раздел 1:
+            <select id="label_1">
+              <option>О себе</option>
+              <option>О нас</option>
+            </select>
+          </label>
+          <label>Раздел 2:
+            <select id="label_2">
+              <option>Портфолио</option>
+              <option>Наши работы</option>
+            </select>
+          </label>
+          <label>Раздел 3:
+            <select id="label_3">
+              <option>Услуги</option>
+              <option>Цены</option>
+            </select>
+          </label>
+          <label>Раздел 4:
+            <select id="label_4">
+              <option>Контакты</option>
+              <option>Обратная связь</option>
+            </select>
+          </label>
+        </div>
+      </section>
+
+      <section style="margin-top:14px">
+        <h3>📝 Контент страниц</h3>
+        <label>Текст для главной (text_main):</label>
+        <textarea id="text_main" placeholder="Приветствие..."></textarea>
+
+        <label>Текст для 'О нас' (text_about):</label>
+        <textarea id="text_about" placeholder="Описание компании..."></textarea>
+
+        <label>Текст для 'Портфолио' (text_portfolio):</label>
+        <textarea id="text_portfolio" placeholder="Наши лучшие работы..."></textarea>
+
+        <label>Текст для 'Услуги' (text_services):</label>
+        <textarea id="text_services" placeholder="Список услуг..."></textarea>
+      </section>
+
+      <section style="margin-top:14px">
+        <h3>📇 Контакты</h3>
+        <div class="grid2">
+          <label>Телефон:<input type="text" id="phone" placeholder="+7 ..."></label>
+          <label>Email:<input type="text" id="email_contact" placeholder="info@example.com"></label>
+        </div>
+      </section>
+
+      <section style="margin-top:16px">
+        <h3>Дополнительные страницы</h3>
+        <div id="pages" class="pages"></div>
+        <div class="actions" style="margin-top:8px">
+          <button id="addPage" type="button" class="btn">+ Добавить страницу</button>
+          <button id="resetPages" type="button" class="btn" style="background:#95a5a6">Сбросить</button>
+        </div>
+        <div class="small">Дополнительные страницы будут добавлены в zip как slug.html</div>
+      </section>
+
+      <div class="actions" style="margin-top:20px">
+        <button type="submit" class="btn">💾 Сохранить на сервер</button>
+        <button id="localZip" type="button" class="btn alt">📦 Скачать ZIP (локально)</button>
+      </div>
+    </form>
+
+    <div id="downloadArea" class="download-section">
+      <div>Сайт сгенерирован. Можно скачать локально или с сервера:</div>
+      <button id="downloadZip" class="btn alt" style="margin-top:10px">📦 Скачать ZIP (в браузере)</button>
+      <div><a id="dlLink" class="dl-server" href="#" target="_blank" style="display:none">📥 Скачать ZIP с сервера</a></div>
+    </div>
+
+    <h4 style="margin-top:14px">Лог / ответы:</h4>
+    <pre id="log">Ожидание...</pre>
+  </main>
+
+<script>
+  // Утилиты и страничные элементы
+  const $ = id => document.getElementById(id);
+  const log = v => { $('log').textContent = (typeof v === 'string') ? v : JSON.stringify(v, null, 2); };
+
+  // Динамические страницы
+  function createPageBlock(title = '', slug = '', content = '') {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'page';
+    wrapper
+<label>Домен (короткое имя, используется для имени архива):</label>
+      <input type="text" id="domain" placeholder="my-site">
+
+      <label>Заголовок сайта (site_name):</label>
+      <input type="text" id="site_name" placeholder="Название компании">
+
+      <section style="margin-top:14px">
+        <h3>⚙️ Названия разделов меню</h3>
+        <div class="grid2">
+          <label>Раздел 1:
+            <select id="label_1">
+              <option>О себе</option>
+              <option>О нас</option>
+            </select>
+          </label>
+          <label>Раздел 2:
+            <select id="label_2">
+              <option>Портфолио</option>
+              <option>Наши работы</option>
+            </select>
+          </label>
+          <label>Раздел 3:
+            <select id="label_3">
+              <option>Услуги</option>
+              <option>Цены</option>
+            </select>
+          </label>
+          <label>Раздел 4:
+            <select id="label_4">
+              <option>Контакты</option>
+              <option>Обратная связь</option>
+            </select>
+          </label>
+        </div>
+      </section>
+
+      <section style="margin-top:14px">
+        <h3>📝 Контент страниц</h3>
+        <label>Текст для главной (text_main):</label>
+        <textarea id="text_main" placeholder="Приветствие..."></textarea>
+
+        <label>Текст для 'О нас' (text_about):</label>
+        <textarea id="text_about" placeholder="Описание компании..."></textarea>
+
+        <label>Текст для 'Портфолио' (text_portfolio):</label>
+        <textarea id="text_portfolio" placeholder="Наши лучшие работы..."></textarea>
+
+        <label>Текст для 'Услуги' (text_services):</label>
+        <textarea id="text_services" placeholder="Список услуг..."></textarea>
+      </section>
+
+      <section style="margin-top:14px">
+        <h3>📇 Контакты</h3>
+        <div class="grid2">
+          <label>Телефон:<input type="text" id="phone" placeholder="+7 ..."></label>
+          <label>Email:<input type="text" id="email_contact" placeholder="info@example.com"></label>
+        </div>
+      </section>
+
+      <section style="margin-top:16px">
+        <h3>Дополнительные страницы</h3>
+        <div id="pages" class="pages"></div>
+        <div class="actions" style="margin-top:8px">
+          <button id="addPage" type="button" class="btn">+ Добавить страницу</button>
+          <button id="resetPages" type="button" class="btn" style="background:#95a5a6">Сбросить</button>
+        </div>
+        <div class="small">Дополнительные страницы будут добавлены в zip как slug.html</div>
+      </section>
+
+      <div class="actions" style="margin-top:20px">
+        <button type="submit" class="btn">💾 Сохранить на сервер</button>
+        <button id="localZip" type="button" class="btn alt">📦 Скачать ZIP (локально)</button>
+      </div>
+    </form>
+
+    <div id="downloadArea" class="download-section">
+      <div>Сайт сгенерирован. Можно скачать локально или с сервера:</div>
+      <button id="downloadZip" class="btn alt" style="margin-top:10px">📦 Скачать ZIP (в браузере)</button>
+      <div><a id="dlLink" class="dl-server" href="#" target="_blank" style="display:none">📥 Скачать ZIP с сервера</a></div>
+    </div>
+
+    <h4 style="margin-top:14px">Лог / ответы:</h4>
+    <pre id="log">Ожидание...</pre>
+  </main>
+
+<script>
+  // Утилиты и страничные элементы
+  const $ = id => document.getElementById(id);
+  const log = v => { $('log').textContent = (typeof v === 'string') ? v : JSON.stringify(v, null, 2); };
+
+  // Динамические страницы
+  function createPageBlock(title = '', slug = '', content = '') {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'page';
+    wrapper.innerHTML = `
+      <button class="del">Удалить</button>
+      <label>Заголовок: <input class="p-title" type="text" value="${title}" placeholder="Заголовок"></label>
+      <label>Slug (имя файла): <input class="p-slug" type="text" value="${slug}" placeholder="slug"></label>
+      <div contenteditable="true" class="p-content" style="border:1px solid #ddd; padding:8px; margin-top:6px; min-height:60px; background:#fff">${content}</div>
+    `;
+    wrapper.querySelector('.del').addEventListener('click', () => wrapper.remove());
+    return wrapper;
+  }
+
+  $('addPage').addEventListener('click', () => $('pages').appendChild(createPageBlock()));
+  $('resetPages').addEventListener('click', () => { if(confirm('Сбросить доп. страницы?')) $('pages').innerHTML = ''; });
+
+  // CRC32 (таблица) — необходима для валидного ZIP
+  const crcTable = (function(){
+    const t = new Uint32Array(256);
+    for (let i = 0; i < 256; i++) {
+      let c = i;
+      for (let k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+      t[i] = c >>> 0;
+    }
+    return t;
+  })();
+  function crc32(buf) {
+    let crc = 0xffffffff;
+    for (let i = 0; i < buf.length; i++) crc = (crc >>> 8) ^ crcTable[(crc ^ buf[i]) & 0xff];
+    return (crc ^ 0xffffffff) >>> 0;
+  }
+
+  // Вспомогательные функции для little-endian
+  function u32le(n){ const b=new Uint8Array(4); b[0]=n&0xff; b[1]=(n>>>8)&0xff; b[2]=(n>>>16)&0xff; b[3]=(n>>>24)&0xff; return b; }
+  function u16le(n){ const b=new Uint8Array(2); b[0]=n&0xff; b[1]=(n>>>8)&0xff; return b; }
+
+  // makeZip: корректная реализация ZIP (store, без сжатия), с CRC32 и верными offset
+  function makeZip(files) {
+    const encoder = new TextEncoder();
+    const parts = [];
+    const central = [];
+    let offset = 0;
+
+    files.forEach(file => {
+      const nameBytes = encoder.encode(file.name);
+      const dataBytes = (file.data instanceof Uint8Array) ? file.data : encoder.encode(file.data);
+      const crc = crc32(dataBytes);
+      const size = dataBytes.length;
+
+      // Local file header (30 bytes + name)
+      const localHeader = new Uint8Array(30 + nameBytes.length);
+      let p = 0;
+      localHeader[p++] = 0x50; localHeader[p++] = 0x4b; localHeader[p++] = 0x03; localHeader[p++] = 0x04;
+      localHeader.set(u16le(20), p); p += 2; // version needed
+      localHeader.set(u16le(0), p); p += 2;  // flags
+      localHeader.set(u16le(0), p); p += 2;  // compression (0 - store)
+      localHeader.set(u16le(0), p); p += 2;  // mod time
+      localHeader.set(u16le(0), p); p += 2;  // mod date
+      localHeader.set(u32le(crc), p); p += 4;
+      localHeader.set(u32le(size), p); p += 4;
+      localHeader.set(u32le(size), p); p += 4;
+      localHeader.set(u16le(nameBytes.length), p); p += 2;
+      localHeader.set(u16le(0), p); p += 2;
+      localHeader.set(nameBytes, p); p += nameBytes.length;
+
+      parts.push(localHeader);
+      parts.push(dataBytes);
+
+      const localOffset = offset;
+      offset += localHeader.length + dataBytes.length;
+
+      // Central directory header (46 bytes + name)
+      const centralHeader = new Uint8Array(46 + nameBytes.length);
+      p = 0;
+      centralHeader[p++] = 0x50; centralHeader[p++] = 0x4b; centralHeader[p++] = 0x01; centralHeader[p++] = 0x02;
+      centralHeader.set(u16le(20), p); p += 2; // version made by
+      centralHeader.set(u16le(20), p); p += 2; // version needed
+      centralHeader.set(u16le(0), p); p += 2;  // flags
+      centralHeader.set(u16le(0), p); p += 2;  // compression
+      centralHeader.set(u16le(0), p); p += 2;  // mod time
+      centralHeader.set(u16le(0), p); p += 2;  // mod date
+      centralHeader.set(u32le(crc), p); p += 4;
+      centralHeader.set(u32le(size), p); p += 4;
+      centralHeader.set(u32le(size), p); p += 4;
+      centralHeader.set(u16le(nameBytes.length), p); p += 2;
+      centralHeader.set(u16le(0), p); p += 2; // extra len
+      centralHeader.set(u16le(0), p); p += 2; // file comment len
+      centralHeader.set(u16le(0), p); p += 2; // disk number start
+      centralHeader.set(u16le(0), p); p += 2; // internal attrs
+      centralHeader.set(u32le(0), p); p += 4; // external attrs
+      centralHeader.set(u32le(localOffset), p); p += 4;
+      centralHeader.set(nameBytes, p); p += nameBytes.length;
+
+      central.push(centralHeader);
+    });
+
+    const centralStart = offset;
+    const centralSize = central.reduce((s, c) => s + c.length, 0);
+    const centralBuf = new Uint8Array(centralSize);
+    let pos = 0;
+    central.forEach(c => { centralBuf.set(c, pos); pos += c.length; });
+
+    // End of central directory
+    const eocd = new Uint8Array(22);
+    let q = 0;
+    eocd[q++] = 0x50; eocd[q++] = 0x4b; eocd[q++] = 0x05; eocd[q++] = 0x06;
+    eocd.set(u16le(0), q); q += 2; // disk number
+    eocd.set(u16le(0), q); q += 2; // disk start
+    eocd.set(u16le(central.length), q); q += 2; // entries this disk
+    eocd.set(u16le(central.length), q); q += 2; // total entries
+    eocd.set(u32le(centralSize), q); q += 4; // central size
+    eocd.set(u32le(centralStart), q); q += 4; // central offset
+    eocd.set(u16le(0), q); q += 2; // comment length
+
+    const blob = new Blob([...parts, centralBuf, eocd], { type: 'application/zip' });
+    return blob;
+  }
+
+  // Генерация файлов сайта (html и style)
+  function generateSiteFiles(site) {
+    const esc = s => (s == null ? '' : String(s));
+    const labels = site.labels || {};
+    const nav = `<nav><a href="index.html">Главная</a> | <a href="about.html">${esc(labels.l1||'О нас')}</a> | <a href="portfolio.html">${esc(labels.l2||'Портфолио')}</a> | <a href="services.html">${esc(labels.l3||'Услуги')}</a> | <a href="contact.html">${esc(labels.l4||'Контакты')}</a></nav>`;
+
+    const tpl = (title, content) => `<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${title}</title><link rel="stylesheet" href="style.css"></head><body>${nav}<main style="max-width:900px;margin:30px auto;padding:20px;background:#fff;border-radius:8px"><h1>${title}</h1>${content}</main></body></html>`;
+
+    const files = [
+      { name: 'index.html', data: tpl(site.name || 'Главная', site.content?.main || '') },
+      { name: 'about.html', data: tpl(labels.l1 || 'О нас', site.content?.about || '') },
+      { name: 'portfolio.html', data: tpl(labels.l2 || 'Портфолио', site.content?.portfolio || '') },
+      { name: 'services.html', data: tpl(labels.l3 || 'Услуги', site.content?.services || '') },
+      { name: 'contact.html', data: tpl(labels.l4 || 'Контакты', `<p>Тел: ${site.content?.contacts?.phone || ''}</p><p>Email: ${site.content?.contacts?.email || ''}</p>`) },
+      { name: 'style.css', data: `body{font-family:Arial,Helvetica,sans-serif;background:#f6f8fb;margin:0;padding:20px}nav{max-width:900px;margin:10px auto;padding:10px;background:#fff;border-radius:6px;border:1px solid #e6eef8}` }
+    ];
+
+    // доп. страницы из UI
+    const pagesContainer = $('pages');
+    if (pagesContainer) {
+      Array.from(pagesContainer.children).forEach(block => {
+        const title = block.querySelector('.p-title') ? block.querySelector('.p-title').value : '';
+        const slug = block.querySelector('.p-slug') ? block.querySelector('.p-slug').value : '';
+        const content = block.querySelector('.p-content') ? block.querySelector('.p-content').innerHTML : '';
+        const name = (slug || title).trim() ? `${(slug || title).trim().replace(/\s+/g, '-').toLowerCase()}.html` : null;
+        if (name) files.push({ name, data: tpl(title || 'Страница', content) });
+      });
+    }
+
+    return files;
+  }
+
+  // Обработчики формы/кнопок
+  $('siteForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    log('Собираю данные и отправляю на сервер...');
+
+    const payload = {
+      domain_prefix: $('domain').value.trim(),
+      name: $('site_name').value.trim(),
+      labels: {
+        l1: $('label_1').value,
+        l2: $('label_2').value,
+        l3: $('label_3').value,
+        l4: $('label_4').value
+      },
+      content: {
+        main: $('text_main').value,
+        about: $('text_about').value,
+        portfolio: $('text_portfolio').value,
+        services: $('text_services').value,
+        contacts: { phone: $('phone').value, email: $('email_contact').value }
+      },
+      pages: [] // (UI pages are packed into zip, but we also store them if needed)
+    };
+
+    // собираем доп. страницы в payload.pages (чтобы сохранить в БД)
+    const pagesContainer = $('pages');
+    if (pagesContainer) {
+      Array.from(pagesContainer.children).forEach(b => {
+        const title = b.querySelector('.p-title') ? b.querySelector('.p-title').value : '';
+        const slug = b.querySelector('.p-slug') ? b.querySelector('.p-slug').value : '';
+        const description = b.querySelector('.p-content') ? b.querySelector('.p-content').innerHTML : '';
+        if (title) payload.pages.push({ title, slug, description });
+      });
+    }
+
+    try {
+      const res = await fetch('/api/sites', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+      const body = await res.json().catch(()=>null);
+      log({ status: res.status, body });
+      if (res.ok && body && body.id) {
+        $('downloadArea').style.display = 'block';
+        $('dlLink').style.display = 'inline-block';
+        $('dlLink').href = '/api/site-export/' + encodeURIComponent(body.id);
+      } else {
+        $('downloadArea').style.display = 'block';
+        $('dlLink').style.display = 'none';
+      }
+    } catch (err) {
+      log('Ошибка при отправке: ' + (err && err.message ? err.message : String(err)));
+      $('downloadArea').style.display = 'block';
+      $('dlLink').style.display = 'none';
+    }
+  });
+
+  // локальный zip: готовим файлы и вызываем makeZip
+  $('localZip').addEventListener('click', () => {
+    const site = {
+      name: $('site_name').value,
+      labels: { l1: $('label_1').value, l2: $('label_2').value, l3: $('label_3').value, l4: $('label_4').value },
+      content: {
+        main: $('text_main').value, about: $('text_about').value, portfolio: $('text_portfolio').value, services: $('text_services').value,
+        contacts: { phone: $('phone').value, email: $('email_contact').value }
+      }
+    };
+    const files = generateSiteFiles(site);
+    const blob = makeZip(files);
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    const dname = ($('domain').value || 'site').replace(/\s+/g,'-') + '.zip';
+    a.download = dname;
+    a.click();
+    setTimeout(()=>URL.revokeObjectURL(url), 2000);
+  });
+
+  // кнопка внутри downloadArea (её можно использовать, если форма уже послана)
+  $('downloadZip').addEventListener('click', () => {
+    $('localZip').click();
+  });
+
+  function logout() { try { localStorage.removeItem('userId'); } catch(e){} location.href='index.html'; }
+</script>
+</body>
+</html>
+[20.05.2026 1:31] UnlimAI (GPT | Claude | MidJourney): <!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Конструктор | BobbyHost</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f7f6; padding: 20px; padding-top: 80px; }
+        .top-nav { background: #2c3e50; color: white; padding: 15px; position: fixed; top: 0; left: 0; right: 0; display: flex; justify-content: space-between; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        input, textarea, select { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        .btn-main { background: #27ae60; color: white; padding: 15px; border: none; width: 100%; cursor: pointer; font-weight: bold; border-radius: 5px; font-size: 16px; }
+        .download-section { display: none; margin-top: 20px; padding: 20px; background: #e8f5e9; border: 2px dashed #27ae60; text-align: center; }
+        pre#log { background: #eee; padding: 10px; font-size: 12px; color: #333; overflow-x: auto; }
+    </style>
+</head>
+<body>
+
+    <nav class="top-nav">
+        <strong>BobbyHost Generator</strong>
+        <a href="dashboard.html" style="color: white;">📂 Мои сайты</a>
+    </nav>
+
+    <div class="container">
+        <h2 id="pageTitle">🛠 Создание нового сайта</h2>
+        <form id="siteForm">
+            <input type="text" id="site_name" placeholder="Название сайта (напр. Студия дизайна)" required>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <select id="label_1"><option value="О нас">О нас</option><option value="О себе">О себе</option></select>
+                <select id="label_2"><option value="Портфолио">Портфолио</option><option value="Работы">Работы</option></select>
+                <select id="label_3"><option value="Услуги">Услуги</option><option value="Цены">Цены</option></select>
+                <select id="label_4"><option value="Контакты">Контакты</option><option value="Связь">Связь</option></select>
+            </div>
+
+            <textarea id="text_main" placeholder="Главная страница..."></textarea>
+            <textarea id="text_about" placeholder="О нас..."></textarea>
+            <textarea id="text_portfolio" placeholder="Портфолио..."></textarea>
+            <textarea id="text_services" placeholder="Услуги..."></textarea>
+ <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <input type="text" id="phone" placeholder="Телефон">
+                <input type="email" id="email" placeholder="Email">
+            </div>
+
+            <label>Ваш поддомен:</label>
+            <input type="text" id="domain" placeholder="my-best-site" required>
+            
+            <button type="submit" id="submitBtn" class="btn-main">🚀 Сгенерировать и сохранить</button>
+        </form>
+
+        <div id="downloadSection" class="download-section">
+            <h3>🎉 Готово!</h3>
+            <button id="downloadBtn" style="background:#2980b9; color:white; padding:10px; border:none; cursor:pointer;">📥 СКАЧАТЬ ZIP</button>
+            <br><br>
+            <a id="serverLink" href="#" style="display:none; color:#27ae60;">Скачать копию с сервера</a>
+        </div>
+
+        <p>Лог событий:</p>
+        <pre id="log">Ожидание действий...</pre>
+    </div>
+
+<script>
+    const log = (msg) => { document.getElementById('log').textContent += "\n" + msg; console.log(msg); };
+
+    // --- ZIP ENGINE (ЧИСТЫЙ JS) ---
+    function createZip(files) {
+        const enc = new TextEncoder();
+        const crc32 = (r)=>{for(var a,o=[],c=0;c<256;c++){a=c;for(var f=0;f<8;f++)a=1&a?3988292384^a>>>1:a>>>1;o[c]=a}for(var n=-1,t=0;t<r.length;t++)n=n>>>8^o[255&(n^r[t])];return(-1^n)>>>0};
+        const u16 = n => [n & 0xFF, (n >> 8) & 0xFF];
+        const u32 = n => [n & 0xFF, (n >> 8) & 0xFF, (n >> 16) & 0xFF, (n >> 24) & 0xFF];
+
+        let offset = 0, central = [], body = [];
+        files.forEach(f => {
+            const d = enc.encode(f.data), n = enc.encode(f.name), c = crc32(d);
+            const head = new Uint8Array([80,75,3,4,20,0,0,0,0,0,0,0,0,0,...u32(c),...u32(d.length),...u32(d.length),...u16(n.length),0,0]);
+            body.push(head, n, d);
+            const dir = new Uint8Array([80,75,1,2,20,0,20,0,0,0,0,0,0,0,0,0,...u32(c),...u32(d.length),...u32(d.length),...u16(n.length),0,0,0,0,0,0,0,0,0,0,0,0,...u32(offset)]);
+            central.push(dir, n);
+            offset += head.length + n.length + d.length;
+        });
+        const centralData = new Uint8Array(central.reduce((a,b)=>a+b.length,0));
+        let p=0; central.forEach(c=>{centralData.set(c,p); p+=c.length});
+        const eocd = new Uint8Array([80,75,5,6,0,0,0,0,...u16(files.length),...u16(files.length),...u32(centralData.length),...u32(offset),0,0]);
+        return new Blob([...body, centralData, eocd], {type:"application/zip"});
+    }
+
+    // --- ОБРАБОТКА ФОРМЫ ---
+    document.getElementById('siteForm').onsubmit = async (e) => {
+        e.preventDefault();
+        log("Начинаю сбор данных...");
+
+        const data = {
+            domain_prefix: document.getElementById('domain').value,
+            name: document.getElementById('site_name').value,
+            labels: {
+                l1: document.getElementById('label_1').value,
+                l2: document.getElementById('label_2').value,
+                l3: document.getElementById('label_3').value,
+                l4: document.getElementById('label_4').value
+            },
+            content: {
+                main: document.getElementById('text_main').value || "Пусто",
+                about: document.getElementById('text_about').value || "Пусто",
+                portfolio: document.getElementById('text_portfolio').value || "Пусто",
+                services: document.getElementById('text_services').value || "Пусто",
+                contacts: {
+                    phone: document.getElementById('phone').value,
+                    email: document.getElementById('email').value
+                }
+            }
+        };
+
+        log("Данные собраны: " + data.domain_prefix);
+
+        try {
+            log("Отправка на сервер...");
+            const response = await fetch('/api/sites', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+            log("Ответ сервера: " + JSON.stringify(result));
+
+            if (result.success || result.id) {
+                document.getElementById('downloadSection').style.display = 'block';
+                if (result.id) {
+                    const sLink = document.getElementById('serverLink');
+                    sLink.href = `/api/site-export/${result.id}`;
+                    sLink.style.display = 'inline';
+                }
+
+                // Логика кнопки скачивания
+                document.getElementById('downloadBtn').onclick = () => {
+                    log("Генерация архива...");
+                    const nav = `<nav><a href="index.html">Главная</a> | <a href="about.html">${data.labels.l1}</a> | <a href="portfolio.html">${data.labels.l2}</a> | <a href="services.html">${data.labels.l3}</a> | <a href="contact.html">${data.labels.l4}</a></nav>`;
+                    const tpl = (t, c) => `<html><head><meta charset="utf-8"><title>${t}</title></head><body>${nav}<h1>${t}</h1><p>${c}</p></body></html>`;
+                    
+                    const files = [
+                        { name: "index.html", data: tpl(data.name, data.content.main) },
+                        { name: "about.html", data: tpl(data.labels.l1, data.content.about) },
+                        { name: "portfolio.html", data: tpl(data.labels.l2, data.content.portfolio) },
+                        { name: "services.html", data: tpl(data.labels.l3, data.content.services) },
+                        { name: "contact.html", data: tpl(data.labels.l4, `Тел: ${data.content.contacts.phone}<br>Email: ${data.content.contacts.email}`) }
+                    ];
+
+                    const blob = createZip(files);
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `${data.domain_prefix}.zip`;
+                    a.click();
+                    log("Архив скачан.");
+                };
+            }
+        } catch (err) {
+            log("ОШИБКА: " + err.message);
+            alert("Ошибка связи с сервером. Проверь, запущен ли server.js");
+        }
+    };
+</script>
+</body>
+</html>

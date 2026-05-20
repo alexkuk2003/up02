@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>BobbyHost | Мои сайты</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .menu-card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 400px; }
+        .site-item { 
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px; border-bottom: 1px solid #eee; transition: 0.2s;
+        }
+        .site-item:hover { background: #f9f9f9; }
+        .btn-edit { background: #3498db; color: white; padding: 5px 10px; border-radius: 4px; text-decoration: none; font-size: 14px; }
+        .logout-link { display: block; margin-top: 20px; color: #e74c3c; text-decoration: none; font-weight: bold; }
+        .empty-msg { color: #888; font-style: italic; margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <div class="menu-card">
+        <h1>BobbyHost</h1>
+        <h3>📂 Редактировать сгенерированный сайт:</h3>
+        
+        <div id="sitesList">
+            <p class="loading">Загрузка списка сайтов...</p>
+        </div>
+
+        <button onclick="location.href='generator.html'" class="btn-main" style="margin-top: 20px;">✚ Создать новый сайт</button>
+        
+        <a href="#" onclick="logout()" class="logout-link">🚪 Выход из аккаунта</a>
+    </div>
+
+    <script>
+        const userId = localStorage.getItem('userId');
+        if (!userId) location.href = 'index.html';
+
+        async function loadSites() {
+            const res = await fetch(`/api/user-sites/${userId}`);
+            const sites = await res.json();
+            const listDiv = document.getElementById('sitesList');
+            listDiv.innerHTML = "";
+
+            if (sites.length === 0) {
+                listDiv.innerHTML = '<p class="empty-msg">У вас пока нет созданных сайтов.</p>';
+            } else {
+                sites.forEach(site => {
+                    listDiv.innerHTML += `
+                        <div class="site-item">
+                            <span>🌐 ${site.domain}.bobbyhost.ru</span>
+                            <a href="generator.html?edit=${site.id}" class="btn-edit">Редактировать</a>
+                        </div>
+                    `;
+                });
+            }
+        }
+
+        function logout() {
+            localStorage.clear();
+            location.href = 'index.html';
+        }
+
+        loadSites();
+    </script>
+</body>
+</html>
